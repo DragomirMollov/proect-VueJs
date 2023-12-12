@@ -6,6 +6,7 @@ import { computed, reactive } from 'vue';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
+import { createUser } from '../dataProvider/user';
 
 const data = reactive({
     firstName: '',
@@ -24,16 +25,19 @@ const rules = computed(() => ({
 }))
 
 const v$ = useValidate(rules, data);
+
 async function onSubmit() {
     const isValid = await v$.value.$validate();
     if(isValid) {
-
+        const hasPassed = await createUser(data);
+        console.log('hasPassed?', hasPassed);
     }
 }
 </script>
 
 <template>
     <form action="" @submit.prevent="onSubmit">
+        <h1>Register</h1>
         <InputText type="text" v-model="v$.firstName.$model" placeholder="First Name"/>
         <ul v-if="v$.firstName.$errors.length">
             <li v-for="error in v$.firstName.$errors" :key="error.$uid">
@@ -56,17 +60,17 @@ async function onSubmit() {
         <div class="parent">
             <div class="password">
                 <Password v-model="v$.password.$model" promptLabel="Choose a password" />
-                <ul v-if="v$.password.$errors.length">
-            <li v-for="error in v$.password.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </li>
-        </ul>
+                    <ul v-if="v$.password.$errors.length">
+                        <li v-for="error in v$.password.$errors" :key="error.$uid">
+                            {{ error.$message }}
+                        </li>
+                    </ul>
                 <Password v-model="v$.repassword.$model" promptLabel="Repeat a password" />
-                <ul v-if="v$.repassword.$errors.length">
-            <li v-for="error in v$.repassword.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </li>
-        </ul>
+                    <ul v-if="v$.repassword.$errors.length">
+                        <li v-for="error in v$.repassword.$errors" :key="error.$uid">
+                            {{ error.$message }}
+                        </li>
+                    </ul>
             </div>
         </div>
         <div class="button">

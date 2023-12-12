@@ -1,5 +1,10 @@
-<script>
+<script setup>
+import { mapActions, mapState } from 'pinia';
+import { RouterLink } from 'vue-router';
+import { useUserStore } from '../store/useUserStore';
 
+const { isAuthenticated, profile } = mapState(useUserStore, ['isAuthenticated', 'profile']);
+const { logout } = mapActions(useUserStore, ['logout']);
 </script>
 
 <template>
@@ -24,17 +29,22 @@
             Register
           </RouterLink>
         </li>
-        <li class="li">
+        <li class="li" v-if="isAuthenticated">
           <RouterLink to="/profile">
             User Profile
           </RouterLink>
         </li>
-        <li class="li">
+        <li v-if="isAuthenticated">
+          <RouterLink to="/favorites">
+            My favourites recipes
+          </RouterLink>
+        </li>
+        <li class="li" v-if="isAuthenticated">
           <RouterLink to="/" @click="logout">
             Logout
           </RouterLink>
         </li>
-        <li class="li">
+        <li class="li" v-if="!isAuthenticated">
           <RouterLink to="/login">
             Login
           </RouterLink>
