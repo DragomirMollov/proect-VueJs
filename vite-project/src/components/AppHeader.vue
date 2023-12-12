@@ -1,10 +1,8 @@
 <script setup>
-import { mapActions, mapState } from 'pinia';
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '../store/useUserStore';
 
-const { isAuthenticated, profile } = mapState(useUserStore, ['isAuthenticated', 'profile']);
-const { logout } = mapActions(useUserStore, ['logout']);
+const { isAuthenticated, profile, logout } = useUserStore();
 </script>
 
 <template>
@@ -64,12 +62,9 @@ nav {
   color: beige !important;
 }
 
-
-
 :deep(.li a:hover) {
   color: rgb(218, 64, 18) !important;
 }
-
 
 nav img {
   height: 2rem;

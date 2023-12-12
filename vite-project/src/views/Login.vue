@@ -54,8 +54,9 @@ const onSubmit = async () => {
         <span v-if="v$?.$pending" class="loader"></span>
         <span v-else>Submit</span>
       </Button>
-    </form>
     <RouterLink to="/register">You don't have an account? Click here...</RouterLink>
+
+    </form>
   </article>
 </template>
 

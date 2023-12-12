@@ -2,6 +2,7 @@
 import useValidate from '@vuelidate/core';
 import { sameAs, required } from '@vuelidate/validators';
 import { computed, reactive } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
@@ -77,7 +78,8 @@ async function onSubmit() {
                 <Button type="button">Cancel</Button>
                 <Button type="submit">Submit</Button>
         </div>
-        
+    <RouterLink to="/login">You have an account? Click here...</RouterLink>
+
     </form>
 </template>
 
