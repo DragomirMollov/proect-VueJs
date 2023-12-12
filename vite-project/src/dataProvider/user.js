@@ -13,7 +13,7 @@ export async function registerUser(body) {
 
 export async function loginUser(data) {
   try {
-    const res = await axios.post('https://dummyjson.com/auth/login', data);
+    const res = await axios.post('/api/user/login', data);
     return res.data;
   } catch (e) {
     console.log('Oops', e);

@@ -8,6 +8,7 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import { registerUser } from '../dataProvider/user';
+import { useUserStore } from '../store/useUserStore';
 
 const data = reactive({
     firstName: '',
@@ -27,19 +28,24 @@ const rules = computed(() => ({
 
 const v$ = useValidate(rules, data);
 
+const userStore = useUserStore();
+
 async function onSubmit() {
   const isValid = await v$.value.$validate();
   if (isValid) {
     const registrationResult = await registerUser(data);
 
     if (registrationResult && registrationResult.token) {
-      // Save the token to localStorage or a state management solution
       console.log('Registration successful! Token:', registrationResult.token);
+
+      userStore.setProfile(data.userName, data.password);
+
+      router.push('/Home');
     } else {
       console.log('Registration failed');
     }
   }
-}  
+}
 </script>
 
 <template>

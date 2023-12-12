@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-
+const bcrypt = require('bcrypt');
 const app = express();
 const port = 3000;
 const secretKey = 'your-secret-key'; // Change this to a secure secret key
@@ -25,25 +25,39 @@ const users = {
 };
 
 // API endpoints
-app.post('/api/user/register', (req, res) => {
+app.post('/api/user/register', async (req, res) => {
   const { username, email, password } = req.body;
+  const saltRounds = 10;
 
   // Check if the user already exists
   if (users[username]) {
     return res.status(400).json({ error: 'User already exists' });
   }
 
-  // Add the new user
-  users[username] = {
-    username,
-    email,
-    password: 'hashed_password' // You should hash the password before storing it in a real-world scenario
-  };
+  try {
+    // Hash the password
+    let hashedPassword = '';
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+      bcrypt.hash(password, salt, function(err, hash) {
+        hashedPassword = hash;
+      });
+  });
 
-  // Generate JWT token
-  const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
+    // Add the new user with the hashed password
+    users[username] = {
+      username,
+      email,
+      password: hashedPassword,
+    };
 
-  res.json({ message: 'User registered successfully', token });
+    // Generate JWT token
+    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
+
+    res.json({ message: 'User registered successfully', token });
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 app.post('/api/user/login', (req, res) => {
