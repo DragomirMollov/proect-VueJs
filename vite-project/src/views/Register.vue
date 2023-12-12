@@ -7,7 +7,7 @@ import { RouterLink } from 'vue-router';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-import { createUser } from '../dataProvider/user';
+import { registerUser } from '../dataProvider/user';
 
 const data = reactive({
     firstName: '',
@@ -28,18 +28,24 @@ const rules = computed(() => ({
 const v$ = useValidate(rules, data);
 
 async function onSubmit() {
-    const isValid = await v$.value.$validate();
-    if(isValid) {
-        const hasPassed = await createUser(data);
-        console.log('hasPassed?', hasPassed);
+  const isValid = await v$.value.$validate();
+  if (isValid) {
+    const registrationResult = await registerUser(data);
+
+    if (registrationResult && registrationResult.token) {
+      // Save the token to localStorage or a state management solution
+      console.log('Registration successful! Token:', registrationResult.token);
+    } else {
+      console.log('Registration failed');
     }
-}
+  }
+}  
 </script>
 
 <template>
     <form action="" @submit.prevent="onSubmit">
         <h1>Register</h1>
-        <InputText type="text" v-model="v$.firstName.$model" placeholder="First Name"/>
+        <!-- <InputText type="text" v-model="v$.firstName.$model" placeholder="First Name"/>
         <ul v-if="v$.firstName.$errors.length">
             <li v-for="error in v$.firstName.$errors" :key="error.$uid">
                 {{ error.$message }}
@@ -50,7 +56,7 @@ async function onSubmit() {
             <li v-for="error in v$.lastName.$errors" :key="error.$uid">
                 {{ error.$message }}
             </li>
-        </ul>
+        </ul> -->
         <InputText type="text" v-model="v$.userName.$model" placeholder="User Name"/>
         <ul v-if="v$.userName.$errors.length">
             <li v-for="error in v$.userName.$errors" :key="error.$uid">

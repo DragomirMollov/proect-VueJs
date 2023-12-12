@@ -1,0 +1,31 @@
+{
+    "recipes": {
+      "1": {
+        "title": "Recipe 1",
+        "description": "Description of Recipe 1",
+        "ingredients": ["Ingredient 1", "Ingredient 2"],
+        "instructions": "Step by step instructions for Recipe 1",
+        "userId": "user1"
+      },
+      "2": {
+        "title": "Recipe 2",
+        "description": "Description of Recipe 2",
+        "ingredients": ["Ingredient A", "Ingredient B"],
+        "instructions": "Step by step instructions for Recipe 2",
+        "userId": "user2"
+      }
+    },
+    "users": {
+      "user1": {
+        "username": "user1",
+        "email": "user1@example.com",
+        "password": "hashed_password"
+      },
+      "user2": {
+        "username": "user2",
+        "email": "user2@example.com",
+        "password": "hashed_password"
+      }
+    }
+  }
+  
