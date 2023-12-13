@@ -1,98 +1,98 @@
 <script setup>
 import useValidate from '@vuelidate/core';
 import { sameAs, required } from '@vuelidate/validators';
-import { computed, reactive } from 'vue';
-import { RouterLink } from 'vue-router';
-
+import { reactive, computed } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import { registerUser } from '../dataProvider/user';
 import { useUserStore } from '../store/useUserStore';
 
+const router = useRouter();
+const userStore = useUserStore();
+
 const data = reactive({
-    firstName: '',
-    lastName: '',
-    userName: '',
-    password: '',
-    repassword: '',
+  username: '',
+  password: '',
+  repassword: '',
 });
 
 const rules = computed(() => ({
-    firstName: { required },
-    lastName: { required },
-    userName: { required },
-    password: { required },
-    repassword: { required, sameAs: sameAs(data.password) },
-}))
+  username: { required },
+  password: { required },
+  repassword: { required, sameAs: sameAs(data.password) },
+}));
 
 const v$ = useValidate(rules, data);
 
-const userStore = useUserStore();
-
 async function onSubmit() {
   const isValid = await v$.value.$validate();
+
   if (isValid) {
-    const registrationResult = await registerUser(data);
+    console.log('Data sent to server:', data);
+    try {
+      const registrationResult = await registerUser({
+        username: data.username,
+        password: data.password,
+        repassword: data.repassword,
+      });
 
-    if (registrationResult && registrationResult.token) {
-      console.log('Registration successful! Token:', registrationResult.token);
-
-      userStore.setProfile(data.userName, data.password);
-
-      router.push('/Home');
-    } else {
-      console.log('Registration failed');
+      if (registrationResult && registrationResult.token) {
+        // Registration successful
+        userStore.setProfile(registrationResult);
+        router.push('/');
+      } else {
+        // Registration failed
+        console.log('Registration failed');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // Handle the case where the username already exists
+        console.log('Username already exists. Please choose a different one.');
+      } else {
+        // Handle other registration errors
+        console.error('Registration error:', error);
+      }
     }
   }
 }
+
 </script>
 
 <template>
-    <form action="" @submit.prevent="onSubmit">
-        <h1>Register</h1>
-        <!-- <InputText type="text" v-model="v$.firstName.$model" placeholder="First Name"/>
-        <ul v-if="v$.firstName.$errors.length">
-            <li v-for="error in v$.firstName.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </li>
-        </ul>
-        <InputText type="text" v-model="v$.lastName.$model" placeholder="Last Name"/>
-        <ul v-if="v$.lastName.$errors.length">
-            <li v-for="error in v$.lastName.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </li>
-        </ul> -->
-        <InputText type="text" v-model="v$.userName.$model" placeholder="User Name"/>
-        <ul v-if="v$.userName.$errors.length">
-            <li v-for="error in v$.userName.$errors" :key="error.$uid">
-                {{ error.$message }}
-            </li>
-        </ul>
+  <form action="" @submit.prevent="onSubmit">
+    <h1>Register</h1>
 
-        <div class="parent">
-            <div class="password">
-                <Password v-model="v$.password.$model" promptLabel="Choose a password" />
-                    <ul v-if="v$.password.$errors.length">
-                        <li v-for="error in v$.password.$errors" :key="error.$uid">
-                            {{ error.$message }}
-                        </li>
-                    </ul>
-                <Password v-model="v$.repassword.$model" promptLabel="Repeat a password" />
-                    <ul v-if="v$.repassword.$errors.length">
-                        <li v-for="error in v$.repassword.$errors" :key="error.$uid">
-                            {{ error.$message }}
-                        </li>
-                    </ul>
-            </div>
-        </div>
-        <div class="button">
-                <Button type="button">Cancel</Button>
-                <Button type="submit">Submit</Button>
-        </div>
+    <InputText type="text" v-model="v$.username.$model" placeholder="User Name" />
+    <ul v-if="v$.username.$errors.length">
+      <li v-for="error in v$.username.$errors" :key="error.$uid">
+        {{ error.$message }}
+      </li>
+    </ul>
+
+    <div class="parent">
+      <div class="password">
+        <Password v-model="v$.password.$model" promptLabel="Choose a password" />
+        <ul v-if="v$.password.$errors.length">
+          <li v-for="error in v$.password.$errors" :key="error.$uid">
+            {{ error.$message }}
+          </li>
+        </ul>
+        <Password v-model="v$.repassword.$model" promptLabel="Repeat a password" />
+        <ul v-if="v$.repassword.$errors.length">
+          <li v-for="error in v$.repassword.$errors" :key="error.$uid">
+            {{ error.$message }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="button">
+      <Button type="button">Cancel</Button>
+      <Button type="submit">Submit</Button>
+    </div>
     <RouterLink to="/login">You have an account? Click here...</RouterLink>
-
-    </form>
+  </form>
 </template>
 
 
@@ -134,7 +134,18 @@ form >div {
 
 
 
-
+  <!-- <InputText type="text" v-model="v$.firstName.$model" placeholder="First Name"/>
+        <ul v-if="v$.firstName.$errors.length">
+            <li v-for="error in v$.firstName.$errors" :key="error.$uid">
+                {{ error.$message }}
+            </li>
+        </ul>
+        <InputText type="text" v-model="v$.lastName.$model" placeholder="Last Name"/>
+        <ul v-if="v$.lastName.$errors.length">
+            <li v-for="error in v$.lastName.$errors" :key="error.$uid">
+                {{ error.$message }}
+            </li>
+        </ul> -->
 
 
 

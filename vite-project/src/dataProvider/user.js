@@ -2,7 +2,12 @@ import { axiosInstance } from "../config/axios";
 
 export async function registerUser(body) {
   try {
-    const res = await axiosInstance.post('/user/register', body);
+
+    console.log('Data sent to server:', body);
+    const res = await axiosInstance.post('/api/user/register', body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    console.log('Server Response:', res);
     console.log('registerUser', res.data);
     return res.data;
   } catch (error) {
@@ -11,12 +16,19 @@ export async function registerUser(body) {
   }
 }
 
-export async function loginUser(data) {
+
+// Example client login logic
+export async function loginUser(credentials) {
   try {
-    const res = await axios.post('/api/user/login', data);
-    return res.data;
-  } catch (e) {
-    console.log('Oops', e);
-    return null;
+    const response = await axiosInstance.post('/api/user/login', credentials);
+    const token = response.data.token;
+    userStore.setToken(token);
+
+    console.log('Server Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Login Error:', error);
+    throw error;
   }
 }
+

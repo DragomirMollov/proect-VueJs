@@ -50,7 +50,7 @@ const onSubmit = async () => {
         <span>{{ v$?.user?.password?.$pending ? 'Validating...' : '' }}</span>
         <span v-if="!v$?.user?.password?.$pending && v$?.user?.password?.$error">Password is required</span>
       </div>
-      <Button :disabled="v$?.$pending || v$?.$error || isLoading">
+      <Button type="submit" :disabled="v$?.$pending || v$?.$error || isLoading">
         <span v-if="v$?.$pending" class="loader"></span>
         <span v-else>Submit</span>
       </Button>
