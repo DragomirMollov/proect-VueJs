@@ -4,6 +4,7 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import FavoriteRecipes from '../views/FavoriteRecipes.vue';
 import UserProfile from '../views/UserProfile.vue';
+import AddRecipe from '../views/AddRecipe.vue';
 import { useUserStore } from '../store/useUserStore';
 
 const validateUser = ()=> {
@@ -17,6 +18,7 @@ const router = createRouter({
         { path: '/', component: Home },
         { path: '/favorites', component: FavoriteRecipes, beforeEnter: validateUser },
         { path: '/profile', component: UserProfile, beforeEnter: validateUser },
+        { path: '/recipes', component: AddRecipe, beforeEnter: validateUser },
         { path: '/register', component: Register },
         { path: '/login', component: Login, beforeEnter: () => {
             const userStore = useUserStore();

@@ -2,9 +2,9 @@
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { RouterLink, useRouter } from 'vue-router';
-import { useUserStore } from '../store/useUserStore';
 import { loginUser } from '../dataProvider/user';
 import { ref } from 'vue';
+import { useUserStore } from '../store/useUserStore';
 
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';

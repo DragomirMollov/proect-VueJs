@@ -37,6 +37,11 @@ const { isAuthenticated, profile, logout } = useUserStore();
             My favourites recipes
           </RouterLink>
         </li>
+        <li v-if="isAuthenticated">
+          <RouterLink to="/recipes">
+            Create Recipes
+          </RouterLink>
+        </li>
         <li class="li" v-if="isAuthenticated">
           <RouterLink to="/" @click="logout">
             Logout
